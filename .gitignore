@@ -1,30 +1,25 @@
-# Unity-generated folders
+[Llaves básicas]
+# Archivos específicos de Unity
 Library/
 Temp/
-Obj/
-Build/
-Builds/
 Logs/
 MemoryCaptures/
 
-# Unity auto-generated files
-*.csproj
-*.unityproj
-*.sln
-*.suo
-*.tmp
-*.user
-*.userprefs
-*.pidb
-*.booproj
-*.svd
-
-# Builds
+# Archivos generados por Builds
+Build/
+Builds/
 *.apk
 *.aab
 
-# Crash reports
-*.stacktrace
+# Configuraciones de usuario
+UserSettings/
+*.pidb
+*.suo
+*.user
+*.userprefs
 
-# Cache
-*.stackdump
+# Otros archivos innecesarios
+*.csproj
+*.unityproj
+*.sln
+*.log
