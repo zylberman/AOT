@@ -2,18 +2,21 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float mouseSensitivity = 100f;
-    public float jumpForce = 5f;
+    public float moveSpeed = 5f; // Velocidad de movimiento normal
+    public float sprintSpeed = 10f; // Velocidad de carrera
+    public float mouseSensitivity = 100f; // Sensibilidad del ratón
+    public float jumpForce = 5f; // Fuerza de salto
 
     private float xRotation = 0f;
     private bool isGrounded;
     public Transform playerCamera;
     private Rigidbody rb;
+    private Animator animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>(); // Obtén el componente Animator
         Cursor.lockState = CursorLockMode.Locked; // Bloquea el cursor al centro de la pantalla
     }
 
@@ -33,10 +36,17 @@ public class PlayerMovement : MonoBehaviour
         float moveX = Input.GetAxis("Horizontal"); // A/D o flechas izquierda/derecha
         float moveZ = Input.GetAxis("Vertical");   // W/S o flechas arriba/abajo
 
+        // Verificar si el jugador está corriendo
+        float currentSpeed = Input.GetKey(KeyCode.LeftShift) && moveZ > 0 ? sprintSpeed : moveSpeed;
+
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
-        Vector3 velocity = move * moveSpeed;
+        Vector3 velocity = move * currentSpeed;
         velocity.y = rb.velocity.y; // Conserva la componente vertical del Rigidbody
         rb.velocity = velocity;
+
+        // Actualizar parámetros del Animator
+        animator.SetFloat("XSpeed", moveX); // Actualiza la velocidad horizontal
+        animator.SetFloat("YSpeed", moveZ); // Actualiza la velocidad vertical
 
         // Salto
         if (Input.GetButtonDown("Jump") && isGrounded)

@@ -2,27 +2,41 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-    public LineRenderer lineRenderer; // LineRenderer para la cuerda
-    public Transform player; // Referencia al objeto Player
-    public Camera playerCamera; // Cámara del jugador
+    public LineRenderer lineRenderer; // Dibuja la cuerda visualmente entre el arma y el punto de anclaje
+    public Transform player; // Referencia al objeto del jugador
+    public Camera playerCamera; // Cámara del jugador para disparar la cuerda en la dirección de la mirada
 
     // Configuración del resorte
-    public float springStrength = 150f; // Fuerza del resorte (50f a 300f)
-    public float springDamper = 10f; // Amortiguación del resorte (0f a 20f)
-    public float maxRopeLength = 50f; // Longitud máxima de la cuerda (10f a 100f)
-    public float ropeShorteningSpeed = 5f; // Velocidad para reducir la cuerda (1f a 20f)
+    public float springStrength = 150f; // Fuerza del resorte:
+                                        // Valores bajos (50f): La cuerda será más flexible, permitiendo más oscilaciones.
+                                        // Valores altos (300f): La cuerda será más rígida, reduciendo la elasticidad.
 
-    public string mouseButton = "Right"; // Botón del mouse ("Left" o "Right")
+    public float springDamper = 10f; // Amortiguación del resorte:
+                                     // Valores bajos (0f): La cuerda oscilará más tiempo, como un resorte.
+                                     // Valores altos (20f): La cuerda se estabilizará rápidamente, eliminando oscilaciones.
 
-    private SpringJoint springJoint; // Referencia al SpringJoint
-    private Rigidbody playerRigidbody; // Referencia al Rigidbody del jugador
+    public float maxRopeLength = 100f; // Longitud máxima de la cuerda:
+                                      // Valores bajos (10f): Cuerda corta, limita el alcance del disparo.
+                                      // Valores altos (100f): Cuerda larga, permite disparar a objetivos más distantes.
+
+    public float ropeShorteningSpeed = 18f; // Velocidad para reducir la cuerda:
+                                           // Valores bajos (1f): La cuerda se acortará lentamente, simulando un tirón suave.
+                                           // Valores altos (20f): La cuerda se acortará rápidamente, atrayendo al jugador con fuerza.
+
+    public string mouseButton = "Right"; // Botón del mouse para disparar la cuerda ("Left" o "Right")
+
+    private SpringJoint springJoint; // Referencia al SpringJoint que simula el comportamiento físico de la cuerda
+    private Rigidbody playerRigidbody; // Referencia al Rigidbody del jugador para aplicar fuerzas físicas
     private bool ropeActive = false; // Indica si la cuerda está activa
-    private bool isShortening = false; // Indica si se está acortando la cuerda
+    private bool isShortening = false; // Indica si la cuerda se está acortando
     private Vector3 ropeTarget; // Punto de anclaje de la cuerda
     private int mouseButtonIndex; // Índice del botón del mouse (0: izquierdo, 1: derecho)
 
-    private float doubleClickTime = 0.3f; // Tiempo máximo entre doble clics
-    private float lastClickTime = 0f; // Momento del último clic
+    private float doubleClickTime = 0.3f; // Tiempo máximo entre doble clics:
+                                          // Valores bajos (0.1f): Requiere clics muy rápidos.
+                                          // Valores altos (0.5f): Permite más tiempo entre clics.
+
+    private float lastClickTime = 0f; // Momento del último clic, usado para detectar doble clics
 
     void Start()
     {
@@ -89,7 +103,7 @@ public class GunController : MonoBehaviour
         Ray ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, maxRopeLength))
         {
-            if (hit.collider.CompareTag("Ground"))
+            if (hit.collider.CompareTag("Grappable"))
             {
                 ropeActive = true;
                 ropeTarget = hit.point;
